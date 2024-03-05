@@ -1,0 +1,67 @@
+// Билет 9
+// АТД Heap. Операции SiftUP, SiftDown, Heapify.
+
+#include <iostream>
+
+class Heap {
+public:
+  int size;
+  int* arr = new int[size];
+  ~Heap() {
+    delete[] arr;
+  }
+  Heap(int s) : size(s) {
+    Heapify();
+    capacity_ = s;
+  }
+private:
+  int capacity_;
+  void SiftDown(int* arr, int n, int id);
+  void Swap(int &a, int &b);
+  void Heapify();
+  void SiftUp(int* arr, int id);
+};
+
+void Heap::Heapify() {
+  for (int i = size / 2 - 1; i >= 0; i--) {
+    SiftDown(arr, size, i);
+  }
+}
+
+void Heap::SiftUp (int* arr, int id) {
+  while (id > 0) {
+    int id_parent = (id -  1) / 2;
+    if (arr[id_parent] < arr[id]) {
+      Swap(arr[id_parent], arr[id]);
+      id = id_parent;
+    } else {
+      break;
+    }
+  }
+}
+
+void Heap::SiftDown(int* arr, int n, int id) {
+  while (id < n) {
+    int id_left = id * 2 + 1;
+    int id_right = id * 2 + 2;
+    int id_max = id;
+    if (id_left < n && (arr[id_max] < arr[id_left])) {
+      id_max = id_left;
+    }
+    if ((id_right < n) && (arr[id_max] < arr[id_right])) {
+      id_max = id_right;
+    }
+    if (arr[id] != arr[id_max]) {
+      Swap(arr[id], arr[id_max]);
+      id = id_max;
+    } else {
+      break;
+    }
+  }
+}
+
+void Heap::Swap(int &a, int &b) {
+  int c = a;
+  a = b;
+  b = c;
+}
