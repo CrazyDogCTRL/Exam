@@ -2,7 +2,7 @@
 // Сортировка Merge sort, функция Merge. Доказательство асимптотик и корректности
 
 #include <iostream>
-void Merge(int *arr, int start, int middle, int end) {
+void Merge(int *arr, int start, int middle, int end) { // O(N * Log N)
   int indexL = 0;
   int indexR = 0;
   int indexMerge = start;
