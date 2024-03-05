@@ -1,0 +1,51 @@
+// Билет 8
+// Сортировка подсчетом. Устойчивая сортировка подсчетом. Доказательство асимптотик и корректности.
+
+#include <iostream>
+
+void CountingSortNonStable(int arr[], int size, int max_value) { // O(N + K)
+  int* count = new int[max_value + 1]{};
+  for (int i = 0; i < size; i++) {
+    count[arr[i]]++;
+  }
+  int index = 0;
+  for (int i = 0; i <= max_value; i++) {
+    while (count[i] > 0) {
+      arr[index] = i;
+      count[i]--;
+      index++;
+    }
+  }
+  delete[] count;
+}
+
+void CountingSortStable(int arr[], int size, int max_value) { // O(N + K)
+  int* A = new int[max_value + 1]{};
+  int* B = new int[size]{};
+  for (int i = 0; i < size; i++) {
+    A[arr[i]]++;
+  }
+  for (int i = 1; i <= max_value; i++) {
+    A[i] += A[i - 1];
+  }
+  for (int j = size - 1; j >= 0; j--) {
+    B[A[arr[j]] - 1] = arr[j];
+    A[arr[j]]--;
+  }
+  for (int i = 0; i < size; i++) {
+    arr[i] = B[i];
+  }
+  delete[] A;
+  delete[] B;
+}
+
+
+int main() {
+  int arr[11] = { 0, 0, 3, 7, 8, 1, 2, 9, 3, 2, 14};
+  int size = sizeof(arr) / sizeof(arr[0]);
+  CountingSortStable(arr, size, 14);
+  for (int i = 0; i < size; i++) {
+    std::cout << arr[i] << " ";
+  }
+  return 0;
+}
