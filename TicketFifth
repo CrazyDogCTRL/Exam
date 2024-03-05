@@ -1,0 +1,64 @@
+// Билет 5
+// Сортировка Merge sort, функция Merge. Доказательство асимптотик и корректности
+
+#include <iostream>
+void Merge(int *arr, int start, int middle, int end) {
+  int indexL = 0;
+  int indexR = 0;
+  int indexMerge = start;
+  int leftSize = middle - start + 1;
+  int rightSize = end - middle;
+  int* leftArr = new int[leftSize];
+  int* rightArr = new int[rightSize];
+  for (int i = 0; i < leftSize; i++) {
+    leftArr[i] = arr[start + i];
+  }
+  for (int i = 0; i < rightSize; i++) {
+    rightArr[i] = arr[i + middle + 1];
+  }
+  while (indexL < leftSize && indexR < rightSize) {
+    if (leftArr[indexL] <= rightArr[indexR]) {
+      arr[indexMerge] = leftArr[indexL];
+      ++indexL;
+    } else {
+      arr[indexMerge] = rightArr[indexR];
+      ++indexR;
+    }
+    ++indexMerge;
+  }
+  while (indexL < leftSize) {
+    arr[indexMerge] = leftArr[indexL];
+    ++indexL;
+    ++indexMerge;
+  }
+  while (indexR < rightSize) {
+    arr[indexMerge] = rightArr[indexR];
+    ++indexR;
+    ++indexMerge;
+  }
+  delete[] leftArr;
+  delete[] rightArr;
+}
+
+void RecursiveMergeSort(int* arr, int start, int end) {
+  if (start < end) {
+    int middle = start + (end - start) / 2;
+    RecursiveMergeSort(arr, start, middle);
+    RecursiveMergeSort(arr, middle + 1, end);
+    Merge(arr, start, middle, end);
+  }
+}
+
+void MergeSort(int* arr, int size) {
+  RecursiveMergeSort(arr, 0, size - 1);
+}
+
+int main() {
+  int n = 8;
+  int *arr1 = new int[n]{1, 21, 5, 13, 7, 20, 2, 23};
+  MergeSort(arr1, n);
+  for (int i  = 0; i < n; i++) {
+      std::cout << arr1[i] << " ";
+    }
+  delete[] arr1;
+}
