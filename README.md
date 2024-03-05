@@ -5,7 +5,7 @@
 5. [Сортировка Merge sort, функция merge. Доказательство асимптотик и корректности.](https://github.com/CrazyDogCTRL/Exam/blame/main/TicketFifth)
 6. [Теорема о сортировках сравнением(б/д).Quicksort.Выбор опорного.Разбиением Ломуто.Асимптотика времени работы и худший случай.](https://github.com/CrazyDogCTRL/Exam/blame/main/TicketSixth)
 7. [Теорема о сортировках сравнением (б/д). Quick sort. Выбор опорного. Разбиенте Хоара. Асимптотика времени работы и худший случай.](https://github.com/CrazyDogCTRL/Exam/blame/main/TicketSeventh)
-8. [Сортировка подсчетом. Устойчивая сортировка подсчетом. Доказательство асимптотик и корректности.](https://github.com/CrazyDogCTRL/Exam/blame/main/TicketEighth)
+8. [Сортировка подсчетом. Устойчивая сортировка подсчетом. Доказательство асимптотик и корректности.](https://github.com/CrazyDogCTRL/Exam/blame/main/TicketEight)
 9. [АТД Heap. Операции SiftUP, SiftDown, Heapify.](https://github.com/CrazyDogCTRL/Exam/blame/main/TicketNineth)
 10. [АТД Heap. Операции Push, PopMax. Heap sort.](https://github.com/CrazyDogCTRL/Exam/blame/main/TicketTenth)
 11. Задача о рюкзаке с весами.
