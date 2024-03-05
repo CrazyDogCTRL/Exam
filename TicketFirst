@@ -1,0 +1,34 @@
+//Билет 1
+#include <iostream>
+
+void NOD1(int a, int b) {
+  while (a != 0 && b != 0) {
+    if (a > b)
+      a -= b;
+    else
+      b -= a;
+  }
+  std::cout << a + b;
+}
+
+int NOD2(int a, int b) {
+  while (a * b != 0) {
+    if (a > b)
+      a %= b;
+    else
+      b %= a;
+  }
+  return a + b;
+}
+
+int NOK(int a, int b) {
+  return a * b / NOD2(a, b);
+}
+
+int main() {
+  int a, b;
+  std::cin >> a >> b;
+  //NOD1(a, b);
+  //NOD2(a, b);
+  std::cout << NOK(a, b);
+}
