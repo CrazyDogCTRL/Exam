@@ -1,0 +1,51 @@
+// Билет 6
+// Теорема о сортировках сравнением(б/д).Quicksort.
+// Выбор опорного.Разбиенте Ломуто. Асимптотика времени работы и худший случай.
+
+#include <iostream>
+void Swap(int & a, int &b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+int PartionLomuto(int arr[], int left, int right) { // ср O(N * log N) наихудший случай (N^2)
+    int pivot = arr[right];
+    int i = left - 1;
+    for (int j = left; j < right; ++j) {
+        if (arr[j] >= pivot) {
+            ++i;
+          if (arr[i] != arr[j])
+            Swap(arr[i], arr[j]);
+        }
+    }
+    Swap(arr[i + 1], arr[right]);
+    return i + 1;
+}
+
+void RecursiveQuickSort(int arr[], int left, int right) {
+  if (left < right) {
+    int idx = PartionLomuto(arr, left, right);
+    RecursiveQuickSort(arr, left, idx - 1);
+    RecursiveQuickSort(arr, idx + 1, right);
+  }
+}
+
+void QuickSort(int arr[], int size) {
+  RecursiveQuickSort(arr, 0, size - 1);
+}
+
+int main() {
+    int n = 0;
+    std::cin >> n;
+    auto *arr = new int[n];
+    for (int i = 0; i < n; ++i) {
+        std::cin >> arr[i];
+    }
+    QuickSort(arr, n);
+    for (int i = 0; i < n; ++i) {
+        std::cout << arr[i] << " ";
+    }
+    delete[] arr;
+    return 0;
+}
