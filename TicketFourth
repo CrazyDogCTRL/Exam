@@ -1,0 +1,60 @@
+// Билет 4
+// Свойства сортировок (устойчивость, потребляемые ресурсы). Тривиальная сортировка.
+// Квадратичные сортировки: Selection sort, Insertion sort, Bubble sort.
+// Поиск максимума и минимума. Доказательство асимптотик и корректности.
+
+#include <iostream>
+
+void Swap(int &a, int &b) {
+  int temp = a;
+  a = b;
+  b = temp;
+}
+
+void SelectionSort(int *array, size_t size) { // O(N^2)
+  for (size_t i = 0; i < size; i++) {
+    for (size_t j = i + 1; j < size; j++) {
+      if (array[j] > array[i]) {
+        Swap(array[i], array[j]);
+      }
+    }
+  }
+}
+
+void InsertionSort(int *array, size_t size) { // O(N^2)
+  for (size_t i = 0; i < size - 1; i++) {
+    size_t j = i + 1;
+    while (j > 0 && array[j - 1] < array[j]) {
+      Swap(array[j - 1], array[j]);
+      j -= 1;
+    }
+  }
+}
+
+void BubbleSort(int *array, size_t size) { // O(N^2)
+  for (size_t i = 0; i < size; i++) {
+    for (size_t j = 0; j < size - i; j++) {
+      if (array[j] < array[j + 1])
+        Swap(array[j], array[j + 1]);
+    }
+  }
+}
+
+int Max(int *array, size_t size) {
+  int max = array[0];
+  for (size_t i = 1; i < size; i++) {
+    if (max < array[i]) {
+      max = array[i];
+    }
+  }
+  return max;
+}
+int main() {
+  int array[5]{1,2,128,4,5};
+  //SelectionSort(array, 5);
+  //InsertionSort(array, 5);
+  //BubbleSort(array, 5);
+  for (size_t i = 0; i < 5; i++) {
+    std::cout << array[i] << " ";
+  }
+}
