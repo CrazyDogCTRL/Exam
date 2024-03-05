@@ -1,0 +1,60 @@
+//Билет 2
+#include <iostream>
+#include <cmath>
+
+bool IsPrime(int n) { // O(sqrt(N))
+  if (n == 1) {
+    return false;
+  }
+  for (int i = 2; i <= sqrt(n); ++i) {
+    if (n % i == 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+void SearchPrimeDivide(int n) { // O(N)
+  size_t divider = 2;
+  while (n != 1) {
+    if (n % divider == 0) {
+      std::cout << divider << " * ";
+      n /= divider;
+    } else {
+      divider++;
+    }
+  }
+  std::cout << "1\n";
+}
+
+void SieveOfEratosthenes(int n) { // O(N log log N)
+  int *primes = new int[n]{};
+  for (size_t i = 2; i <= n; i++) {
+    if (primes[i] == 0) {
+      size_t k = 2;
+      while (k * i <= n) {
+        primes[i * k] = 1;
+        ++k;
+      }
+    }
+  }
+  for (size_t i = 2; i <= n; i++) {
+    if (primes[i] == 0) {
+      std::cout << i << ' ';
+    }
+  }
+  delete[] primes;
+}
+
+int main() {
+  int n;
+  std::cin >> n;
+  if (IsPrime(n)) {
+    std::cout << "PRIME\n";
+  } else {
+    std::cout << "NOT PRIME\n";
+  }
+  SearchPrimeDivide(n);
+  SieveOfEratosthenes(n);
+  return 0;
+}
