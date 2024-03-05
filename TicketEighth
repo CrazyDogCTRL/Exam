@@ -1,0 +1,56 @@
+// Билет 7
+// Теорема о сортировках сравнением(б/д).QuickSort.
+// Выбор опорного. Разбиенте Хоара. Асимптотика времени работы и худший случай.
+
+#include <iostream>
+#include <ctime>
+template <typename T>
+void Swap (T &a, T &b) {
+  T c = a;
+  a = b;
+  b = c;
+}
+
+void Partition(int* array, int left, int right) { // ср O(N * log N) наих (N^2)
+  if (left > right)
+    return;
+  int pivot = array[(left + right) / 2];
+  int i = left;
+  int j = right;
+  while (i <= j) {
+    while (array[i] < pivot) {
+      i++;
+    }
+    while (array[j] > pivot) {
+      j--;
+    }
+    if (i <= j && array[i] != array[j]) {
+      Swap(array[i], array[j]);
+      i++;
+      j--;
+    }
+  }
+  Partition(array, left, j);
+  Partition(array, i, right);
+}
+
+void QuickSort(int* array, int size) {
+  Partition(array, 0, size - 1);
+}
+
+int main() {
+  srand(time(0));
+  const int n = 10;
+  int arr[n];
+  for (int i = 0; i < n; i++) {
+    arr[i] = rand() % 40;
+  }
+  for (int i = 0; i < n; i++) {
+    std::cout << arr[i] << " ";
+  }
+  std::cout << "\n";
+  QuickSort(arr, n);
+  for (int i = 0; i < n; i++) {
+    std::cout << arr[i] << " ";
+  }
+}
