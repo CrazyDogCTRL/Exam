@@ -1,4 +1,5 @@
 //Билет 3
+// Алгоритм бинарного поиска по ответу
 #include <iostream>
 
 bool BiSearch(int *array, int elem, size_t size) { // O(log N)
