@@ -1,0 +1,70 @@
+// билет 14
+// Наибольшая возрастающая подпоследовательность. Алгоритм за 𝒪(𝑁𝑙𝑜𝑔𝑁).
+#include <iostream>
+#include <limits>
+template <typename T>
+
+size_t BinarySearch(const T* const arr, size_t size, const T& elem) {
+  size_t left = 0;
+  size_t right = size - 1;
+  while (left + 1 < right) {
+    size_t middle = (left + right) / 2;
+    if (arr[middle] < elem) {
+      left = middle;
+    } else {
+      right = middle;
+    }
+  }
+  return arr[left] >= elem ? left : right;
+}
+
+int main() {
+  std::ios::sync_with_stdio(0);
+  std::cin.tie(0);
+  std::cout.tie(0);
+  size_t n;
+  std::cin >> n;
+  auto* prev = new size_t[n];
+  auto* dp = new int[n + 1];
+  auto* pos = new size_t[n + 1];
+  auto* arr = new int[n];
+  size_t result = 0;
+  for (size_t i = 0; i < n; ++i) {
+    std::cin >> arr[i];
+  }
+  for (size_t i = 1; i < n + 1; ++i) {
+    dp[i] = std::numeric_limits<int>::max();
+  }
+  dp[0] = std::numeric_limits<int>::min();
+  pos[0] = 0;
+  for (size_t i = 0; i < n; ++i) {
+    size_t p = BinarySearch(dp, n + 1, arr[i]);
+    if (dp[p - 1] < arr[i] && dp[p] > arr[i]) {
+      dp[p] = arr[i];
+      if (p > result) {
+        result = p;
+      }
+      pos[p] = i;
+      prev[i] = pos[p - 1];
+    }
+  }
+  auto* res = new int[n];
+  size_t index = 0;
+  size_t cur = pos[result];
+  while(true) {
+    res[index++] = arr[cur];
+    if (!cur) {
+      break;
+    }
+    cur = prev[cur];
+  }
+  std::cout << result << " \n";
+  for (size_t i = result - 1; i >= 0; i--) {
+    std::cout << res[i] << " ";
+  }
+  delete[] prev;
+  delete[] dp;
+  delete[] pos;
+  delete[] arr;
+  delete[] res;
+}
