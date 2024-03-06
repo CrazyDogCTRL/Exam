@@ -1,0 +1,260 @@
+// билет 18
+// Несбалансированное дерево поиска, обходы дерева DFS (3 вида) и BFS. Идея реализации BST. Реализация search, erase, Node.
+
+#include <iostream>
+template <typename T>
+class BST {
+public:
+  BST();
+  ~BST();
+  void Push(T data);
+  T FindMax();
+  T FindMin();
+  bool Search(T data);
+  void RemoveAt(T data);
+  void Preorder();
+  void Inorder();
+  void Postorder();
+private:
+  class Node {
+  public:
+    Node* pleft;
+    Node* pright;
+    T data;
+    Node(T data = T(), Node* pleft = nullptr, Node* pright = nullptr) {
+      this->data = data;
+      this->pleft = pleft;
+      this->pright = pright;
+    }
+  };
+  Node* root;
+  Node* SearchNode(T data);
+  Node* SearchParent(T data);
+  void DestroyTree(Node* node);
+  void Preorder(Node *node);
+  void Inorder(Node *node);
+  void Postorder(Node *node);
+  
+};
+
+template <typename T>
+BST<T>::BST() {
+  root =  nullptr;
+}
+
+template <typename T>
+void BST<T>::Push(T data) {
+  if (root == nullptr) {
+    root = new Node(data);
+  } else {
+    Node* node = root;
+    while (true) {
+      if (data == node->data) {
+        return;
+      } else if (data > node->data) {
+        if (node->pright == nullptr) {
+          node->pright = new Node(data);
+          break;
+        } else {
+          node = node->pright;
+        }
+      } else {
+        if (node->pleft == nullptr) {
+          node->pleft = new Node(data);
+          break;
+        } else {
+          node = node->pleft;
+        }
+      }
+    }
+  }
+}
+
+template <typename T>
+T BST<T>::FindMax() {
+  Node* node = root;
+  while (true) {
+    if (node->pright != nullptr) {
+      node = node->pright;
+    } else {
+      return node->data;
+    }
+  }
+}
+
+template <typename T>
+T BST<T>::FindMin() {
+  Node* node = root;
+  while (true) {
+    if (node->pleft != nullptr) {
+      node = node->pleft;
+    } else {
+      return node->data;
+    }
+  }
+}
+
+template <typename T>
+bool BST<T>::Search(T data) {
+  Node* node = root;
+  while(node != nullptr) {
+    if (data > node->data) {
+      node = node->pright;
+    } else if (data < node->data){
+      node = node->pleft;
+    } else if (data == node->data) {
+      return true;
+    }
+  }
+  return false;
+}
+
+template <typename T>
+typename BST<T>::Node* BST<T>::SearchNode(T data) {
+  Node* node = root;
+  while(node != nullptr) {
+    if (data > node->data)
+      node = node->pright;
+    else if (data < node->data)
+      node = node->pleft;
+    else if (data == node->data)
+      return node;
+  }
+  return nullptr;
+}
+
+template <typename T>
+typename BST<T>::Node* BST<T>::SearchParent(T data) {
+  Node* node = root;
+  Node* parent = root;
+  if (root == nullptr || data == root->data) {
+    return nullptr;
+  }
+  while(node != nullptr) {
+    if (data > node->data) {
+      parent = node;
+      node = node->pright;
+    }
+    else if (data < node->data) {
+      parent = node;
+      node = node->pleft;
+    }
+    else if (data == node->data)
+      return parent;
+  }
+  return nullptr;
+}
+
+template <typename T>
+void BST<T>::RemoveAt(T data) {
+  Node* node = SearchNode(data);
+  if (node == nullptr) {
+    return;
+  }
+  Node* parent = SearchParent(data);
+  if (node->pleft == nullptr && node->pright == nullptr) {
+    if (parent == nullptr) {
+      delete root;
+      root = nullptr;
+    } else if (parent->pleft == node) {
+      delete parent->pleft;
+      parent->pleft = nullptr;
+    } else {
+      delete parent->pright;
+      parent->pright = nullptr;
+    }
+  }
+  else if (node->pleft == nullptr) {
+    if (parent == nullptr) {
+      root = node->pright;
+    } else if (parent->pleft == node) {
+      parent->pleft = node->pright;
+    } else {
+      parent->pright = node->pright;
+    }
+    delete node;
+  } else if (node->pright == nullptr) {
+    if (parent == nullptr) {
+      root = node->pleft;
+    } else if (parent->pleft == node) {
+      parent->pleft = node->pleft;
+    } else {
+      parent->pright = node->pleft;
+    }
+    delete node;
+  } else {
+    Node* minRight = node->pright;
+    while (minRight->pleft != nullptr) {
+      minRight = minRight->pleft;
+    }
+    T temp = minRight->data;
+    RemoveAt(minRight->data);
+    node->data = temp;
+  }
+}
+
+template <typename T>
+BST<T>::~BST() {
+  DestroyTree(root);
+}
+
+template <typename T>
+void BST<T>::DestroyTree(Node* node) {
+  if (node != nullptr) {
+    DestroyTree(node->pleft);
+    DestroyTree(node->pright);
+    delete node;
+  }
+}
+
+template <typename T>
+void BST<T>::Preorder(Node *node) {
+  if (node != nullptr) {
+    std::cout << node->data << " ";
+    Preorder(node->pleft);
+    Preorder(node->pright);
+  }
+}
+
+template <typename T>
+void BST<T>::Preorder() {
+  Preorder(root);
+}
+
+template <typename T>
+void BST<T>::Inorder(Node *node) {
+  if (node != nullptr) {
+    Inorder(node->pleft);
+    std::cout << node->data << " ";
+    Inorder(node->pright);
+  }
+}
+
+template <typename T>
+void BST<T>::Inorder() {
+  Inorder(root);
+}
+
+template <typename T>
+void BST<T>::Postorder(Node *node) {
+  if (node != nullptr) {
+    Postorder(node->pleft);
+    Postorder(node->pright);
+    std::cout << node->data << " ";
+  }
+}
+
+template <typename T>
+void BST<T>::Postorder() {
+  Postorder(root);
+}
+
+int main() {
+  std::ios_base::sync_with_stdio(false);
+  std::cin.tie(0);
+  std::cout.tie(0);
+  BST<int> a;
+  for (int i = 0; i < 5; i++) {
+    a.Push(i);
+  }
+}
