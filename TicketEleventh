@@ -2,7 +2,7 @@
 // Задача о рюкзаке с весами
 
 #include <iostream>
-int main() {
+int main() { // О(capacity * size)
   size_t size, capacity;
   std::cin >> capacity >> size;
   auto* weights = new size_t[size + 1];
