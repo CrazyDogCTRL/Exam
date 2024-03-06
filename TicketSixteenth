@@ -1,0 +1,79 @@
+// билет 16
+// АТД Стек на односвязном списке. АТД очередь на стеке. Асимптотики выполнения.
+
+#include <iostream>
+template <typename T>
+class List {
+public:
+  List();
+  ~List();
+  void PushBack(T data); // для стека // O(N)
+  int GetSize(){return size;};
+  void PopFront(); // для очереди O(1)
+  void Clear();
+  void PushFront(T data); // для очереди O(1)
+  void PopBack(); // для стека O(N)
+private:
+  class Node {
+  public:
+    Node* pnext;
+    T data;
+    Node(T data = T(), Node* pnext = nullptr) {
+      this->data = data;
+      this->pnext = pnext;
+    }
+  };
+  int size;
+  Node *head;
+};
+
+template <typename T>
+List<T>::List() {
+  size = 0;
+  head = nullptr;
+}
+
+template <typename T>
+void List<T>::PushBack(T data) {
+  if (head == nullptr) {
+    head = new Node(data);
+  } else {
+    Node *current = this->head;
+    while (current->pnext != nullptr) {
+      current = current->pnext;
+    }
+    current->pnext = new Node(data);
+  }
+  size++;
+}
+
+template <typename T>
+void List<T>::PopFront() {
+  Node *temp = head;
+  head = head->pnext;
+  delete temp;
+  size--;
+}
+
+template <typename T>
+void List<T>::Clear() {
+  while (size) {
+    PopFront();
+  }
+}
+
+template <typename T>
+void List<T>::PushFront(T data) {
+  head = new Node(data, head);
+  size++;
+}
+
+template<typename T>
+void List<T>::PopBack() {
+  RemoveAt(size - 1);
+}
+
+template <typename T>
+List<T>::~List() {
+  Clear();
+}
