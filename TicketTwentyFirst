@@ -1,0 +1,237 @@
+// билет 21
+// AVL-дерево. Вращение дерева и поддержание высоты. Высота дерева (б/д). // высота logN
+
+#include <iostream>
+template <typename T>
+class AVL {
+private:
+  class Node {
+  public:
+    Node* pleft;
+    Node* pright;
+    T data;
+    int height;
+    Node(T data = T(), Node* pleft = nullptr, Node* pright = nullptr, int height = 0) {
+      this->data = data;
+      this->pleft = pleft;
+      this->pright = pright;
+      this->height = height;
+    }
+  };
+  Node* root;
+private:
+  Node* Insert(Node* node, T data);
+  int Height(Node* node);
+  int Max(int a, int b);
+  void FixHeight(Node* node);
+  int Bfactor(Node* node);
+  Node* Ballance(Node* node);
+  Node* LR(Node* node);
+  Node* BLR(Node* node);
+  Node* RR(Node* node);
+  Node* BRR(Node* node);
+public:
+  void DestroyTree(Node* node);
+  void Insert(T data);
+  void RemoveAt(T data);
+  AVL();
+  ~AVL();
+  Node* RemoveAt(Node* node, T data);
+};
+
+template <typename T>
+AVL<T>::AVL(){
+  root = nullptr;
+}
+
+template <typename T>
+int AVL<T>::Height(Node* node) {
+  if(node == nullptr)
+    return 0;
+  return node->height;
+}
+
+template <typename T>
+int AVL<T>::Max(int a, int b) {
+  if (a > b)
+    return a;
+  return b;
+}
+
+template <typename T>
+void AVL<T>::FixHeight(Node* node) {
+  int height_left = (node->pleft != nullptr) ? Height(node->pleft) : 0;
+  int height_right = (node->pright != nullptr) ? Height(node->pright) : 0;
+  node->height = Max(height_left, height_right) + 1;
+}
+
+template <typename T>
+int AVL<T>::Bfactor(Node* node) {
+  return Height(node->pleft) - Height(node->pright);
+}
+
+template <typename T>
+typename AVL<T>::Node* AVL<T>::Ballance(Node* node) {
+  FixHeight(node);
+  int bfactor = Bfactor(node);
+  if (bfactor == -2) {
+    if (Bfactor(node->pright) <= 0) {
+      return LR(node);
+    } else {
+      return BLR(node);
+    }
+  }
+  if (bfactor == 2) {
+    if (Bfactor(node->pleft) >= 0) {
+      return RR(node);
+    } else
+      return BRR(node);
+  }
+  else {
+    return node;
+  }
+}
+
+template <typename T>
+typename AVL<T>::Node* AVL<T>::LR(Node* node) {
+  Node* b = node;
+  Node* c = b->pright;
+  b->pright = c->pleft;
+  c->pleft = b;
+  FixHeight(b);
+  FixHeight(c);
+  if (node == root) {
+    root = c;
+  }
+  return c;
+}
+
+template <typename T>
+typename AVL<T>::Node* AVL<T>::BLR(Node* node) {
+  Node* a = node;
+  Node* b = a->pright;
+  Node* c = b->pleft;
+  a->pright = c->pleft;
+  b->pleft = c->pright;
+  c->pleft = a;
+  c->pright = b;
+  FixHeight(a);
+  FixHeight(b);
+  FixHeight(c);
+  if (node == root) {
+    root = c;
+  }
+  return c;
+}
+
+template <typename T>
+typename AVL<T>::Node* AVL<T>::RR(Node* node) {
+  Node* b = node;
+  Node* a = b->pleft;
+  b->pleft = a->pright;
+  a->pright = b;
+  FixHeight(b);
+  FixHeight(a);
+  if (node == root) {
+    root = a;
+  }
+  return a;
+}
+
+template <typename T>
+typename AVL<T>::Node* AVL<T>::BRR(Node* node) {
+  Node* a = node;
+  Node* b = a->pleft;
+  Node* c = b->pright;
+  a->pleft = c->pright;
+  b->pright = c->pleft;
+  c->pright = a;
+  c->pleft = b;
+  FixHeight(a);
+  FixHeight(b);
+  FixHeight(c);
+  if (node == root) {
+    root = c;
+  }
+  return c;
+}
+
+
+template <typename T>
+typename AVL<T>::Node* AVL<T>::Insert(Node* node, T data) {
+  if (node == nullptr) {
+    return new Node(data);
+  }
+  if (data < node->data) {
+    node->pleft = Insert(node->pleft, data);
+  } else if (data > node->data) {
+    node->pright = Insert(node->pright, data);
+  } else {
+    // Если значение уже существует в дереве
+    return node;
+  }
+  FixHeight(node);
+  return Ballance(node);
+}
+
+// Публичная функция Insert
+template <typename T>
+void AVL<T>::Insert(T data) {
+  root = Insert(root, data);
+}
+
+template <typename T>
+typename AVL<T>::Node* AVL<T>::RemoveAt(Node* node, T data) {
+  if (node == nullptr) {
+    return node;
+  }
+  if (data < node->data) {
+    node->pleft = RemoveAt(node->pleft, data);
+  } else if (data > node->data) {
+    node->pright = RemoveAt(node->pright, data);
+  } else {
+    if (node->pleft == nullptr || node->pright == nullptr) {
+      Node* temp = (node->pleft != nullptr) ? node->pleft : node->pright;
+      if (temp == nullptr) {
+        temp = node;
+        node = nullptr;
+      } else {
+        *node = *temp;
+      }
+      delete temp;
+    } else {
+      Node* temp = node->pright;
+      while (temp->pleft != nullptr) {
+        temp = temp->pleft;
+      }
+      node->data = temp->data;
+      node->pright = RemoveAt(node->pright, temp->data);
+    }
+  }
+
+  if (node == nullptr) {
+    return node;
+  }
+  FixHeight(node);
+  return Ballance(node);
+}
+
+// Публичная функция RemoveAt
+template <typename T>
+void AVL<T>::RemoveAt(T data) {
+  root = RemoveAt(root, data);
+}
+
+template <typename T>
+AVL<T>::~AVL() {
+  DestroyTree(root);
+}
+
+template <typename T>
+void AVL<T>::DestroyTree(Node* node) {
+  if (node != nullptr) {
+    DestroyTree(node->pleft);
+    DestroyTree(node->pright);
+    delete node;
+  }
+}
