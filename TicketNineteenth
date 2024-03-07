@@ -1,0 +1,68 @@
+// билет 19
+// Декартово дерево поиска. Операции Split, Erase, Insert. Высота дерева (б/д).
+
+#include <iostream>
+#include <utility>
+#include <ctime>
+
+class Treap {
+  struct Node {
+    Node *pright = nullptr;
+    Node *pleft = nullptr;
+    int key;
+    int priority;
+    Node(int key) : key(key), priority(rand() % 1000) {}
+  };
+  Node *root = nullptr;
+  Node* Merge(Node *a, Node *b);
+  void Split(Node *n, int key, Node *&a, Node *&b);
+  void Insert(int key);
+  void Erase(int key);
+};
+
+Treap::Node* Treap::Merge(Node *a, Node *b) { // все key a < key b
+  if (!a || !b) {
+    return a ? a : b;
+  }
+  if (a->priority > b->priority) {
+    a->pright = Merge(a->pright, b);
+    return a;
+  } else {
+    b->pleft = Merge(a, b->pleft);
+    return b;
+  }
+}
+
+void Treap::Split(Node *n, int key, Node *&a, Node *&b) {
+  if (!n) {
+    a = nullptr;
+    b = nullptr;
+    return;
+  }
+  if (n->key < key) {
+    Split(n->pright, key, n->pright, b);
+    //          n->key
+    //    n->pleft   n->pright
+    a = n;
+  } else {
+    Split(n->pleft, key, a, n->pleft);
+    b = n;
+  }
+}
+
+void Treap::Insert(int key) {
+  Node *less;
+  Node *greater;
+  Split(root, key, less, greater);
+  less = Merge(less, new Node(key));
+  root = Merge(less, greater);
+}
+
+void Treap::Erase(int key) {
+  Node *less;
+  Node *equal;
+  Node *greater;
+  Split(root, key, less, greater);
+  Split(greater, key + 1, equal, greater);
+  root = Merge(less, greater);
+}
