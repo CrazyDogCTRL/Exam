@@ -1,0 +1,73 @@
+// билет 23
+// RMQ. Решение с помощью дерева отрезков.
+
+#include <iostream>
+#include <algorithm>
+#include <cmath>
+const int INF = INT_MAX;
+int RMQUP(int* v, int l, int r, int n); // запрос O(log N), препроцессор O(N)
+
+int* BuildTree(int* v, int n)
+{
+  int lastlayer = (1 << (int)ceil(log2(n))) - 1; // начало последнего слоя
+  int copyLastLayer = lastlayer;
+  int treeSize = 2 * (1 << (int)ceil(log2(n))) - 1;
+  int* tree = new int[treeSize];
+  for (int i = 0; i < n; ++i, ++lastlayer) {
+    tree[lastlayer] = v[i];
+  }
+  for (int i = lastlayer; i < treeSize; i++) {
+    tree[i] = INF;
+  }
+  // инцилизация вершин
+  for (int i = copyLastLayer - 1; i >= 0; --i) {
+    tree[i] = std::min(tree[2 * i + 1], tree[2 * i + 2]);
+  }
+  return tree;
+}
+
+int main() {
+  int n;
+  std::cin >> n;
+  int* v = new int[n]; // Создаем массив для дерева отрезков
+  for (int i = 0; i < n; i++) {
+    std::cin >> v[i];
+  }
+  int l;
+  int r;
+  std::cin >> l >> r;
+  int minInRange = RMQUP(v, --l, --r, n);
+  std::cout << "Minimum value in range [" << ++l << ", " << ++r << "] is " << minInRange << std::endl;
+  delete[] v;
+}
+
+int RMQUP(int* v, int l, int r, int n)
+{
+  int* tree = BuildTree(v, n);
+  int ans = INF;
+  int lastlayer = (1 << (int)ceil(log2(n))) - 1;
+  l += lastlayer;
+  r += lastlayer;
+  while ((l <= r) && l != 0 && r != 0)
+  {
+    // если l - правый сын своего родителя,
+    // учитываем его фундаментальный отрезок
+    if (l % 2 == 0) {
+      ans = std::min(ans, tree[l]);
+      l = (l + 1) / 2;
+    } else {
+      l = (l - 1) / 2;
+    }
+    // если r - левый сын своего родителя,
+    // учитываем его фундаментальный отрезок
+    if (r % 2 != 0) {
+      ans = std::min(ans, tree[r]);
+      r = (r - 2) / 2;
+    } else {
+      // сдвигаем указатели на уровень выше
+      r = (r - 1) / 2;
+    }
+  }
+  delete[] tree;
+  return ans;
+}
