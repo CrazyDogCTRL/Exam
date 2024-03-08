@@ -1,0 +1,72 @@
+// билет 24
+// Задача LCA
+
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+class Tree {
+public:
+  struct Node {
+    size_t parent;
+    size_t index;
+    size_t depth;
+  };
+
+  Tree(size_t size) : size_(size) {
+    nodes_.resize(size_);
+    visited_.resize(size_, false);
+  }
+
+  void addEdge(size_t child, size_t parent) {
+    nodes_[child].parent = parent;
+  }
+
+  void DFS(size_t node, size_t depth) {
+    visited_[node] = true;
+    nodes_[node].index = node;
+    nodes_[node].depth = depth;
+    for (size_t child = 0; child < size_; child++) {
+      if (!visited_[child] && nodes_[child].parent == node) {
+        nodes_[child].parent = node;  // Заполняем parent
+        DFS(child, depth + 1);
+      }
+    }
+  }
+
+  size_t LCA(size_t u, size_t v) {
+    std::vector<std::vector<size_t>> up(size_, std::vector<size_t>(log2(size_) + 1));
+    DFS(0, 0);
+    for (size_t i = 1; i < size_; i++) {
+      up[i][0] = nodes_[i].parent;
+    }
+    for (size_t j = 1; (1 << j) <= size_; j++) {
+      for (size_t i = 0; i + (1 << j) <= size_; i++) {
+        up[i][j] = up[up[i][j - 1]][j - 1];
+      }
+    }
+    if (nodes_[u].index < nodes_[v].index) {
+      std::swap(u, v); // u - ниже
+    }
+    for (int i = log2(size_); i >= 0; i--) {
+      if (nodes_[up[u][i]].depth >= nodes_[v].depth) {
+        u = up[u][i];
+      }
+    }
+    if (u == v) {
+      return u;
+    }
+    for (int i = log2(size_); i >= 0; i--) {
+      if (up[v][i] != up[u][i]) {
+        v = up[v][i];
+        u = up[u][i];
+      }
+    }
+    return nodes_[v].parent;
+  }
+
+private:
+  size_t size_;
+  std::vector<Node> nodes_;
+  std::vector<bool> visited_;
+};
